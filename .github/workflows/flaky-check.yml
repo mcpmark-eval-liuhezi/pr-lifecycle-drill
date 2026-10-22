@@ -1,0 +1,21 @@
+name: flaky-check
+
+on:
+  pull_request:
+
+jobs:
+  flaky-test:
+    runs-on: ubuntu-latest
+    name: Simulated flaky test (fails on first attempt, passes after)
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Run the flaky simulation
+        run: |
+          echo "Attempt #${{ github.run_attempt }} of run ${{ github.run_id }}"
+          if [ "${{ github.run_attempt }}" = "1" ]; then
+            echo "First attempt — simulating a flaky failure."
+            exit 1
+          fi
+          echo "Subsequent attempt — passing as expected."
